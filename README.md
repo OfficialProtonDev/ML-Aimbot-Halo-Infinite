@@ -1,5 +1,5 @@
 # ML-Aimbot-Halo-Infinite
- A free machine learning aimbot for Halo Infinite, this is for educational purposes only, if you use this in a game there is a possibility you might get banned!
+ A machine learning aimbot for Halo Infinite, this is for educational purposes only, if you use this in a game there is a possibility you might get banned!
  
  (Windows Only)
  
