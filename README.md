@@ -7,7 +7,7 @@
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
  
  What it is:
- - This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat, but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility.
+ - This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat (at least according to my research), but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility.
  
  Installation Instructions:
  
@@ -24,3 +24,6 @@
  - Open anaconda as administrator and cd to the directory of the deploy.py script in this repository.
  - Run the command ``` conda activate pytorch-gpu ``` to start up the virtual environment
  - Run the command ``` python deploy.py ``` to start the bot, make sure you have halo infinite open and are preferably about to enter a game.
+
+ Future improvements:
+ - Add support for using Arduino Leonardo + USB Host Shield to spoof mouse inputs and evading possible anticheat detection on mouse movement.
