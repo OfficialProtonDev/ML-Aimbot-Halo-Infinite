@@ -132,7 +132,7 @@ def main(vid_out = None, run_loop=False):
 
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
-    model = torch.hub.load('ultralytics/yolov5', 'custom', source ='local', path='last.pt', force_reload=True) # The repo is stored locally
+    model = torch.hub.load('yolov5', 'custom', source ='local', path='last.pt', force_reload=True) # The repo is stored locally
 
     classes = model.names ### class names in string format
 
