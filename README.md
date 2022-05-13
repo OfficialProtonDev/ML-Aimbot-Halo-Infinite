@@ -26,4 +26,4 @@
  - Run the command ``` python deploy.py ``` to start the bot, make sure you have halo infinite open and are preferably about to enter a game.
 
  Future improvements:
- - Add support for using Arduino Leonardo + USB Host Shield to spoof mouse inputs and evading possible anticheat detection on mouse movement.
+ - Add support for using Arduino Leonardo + USB Host Shield to spoof mouse inputs and evade possible anticheat detection on mouse movement.
