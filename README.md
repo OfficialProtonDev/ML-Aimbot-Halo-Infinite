@@ -7,7 +7,7 @@
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
  
  What it is:
- - This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat (at least according to my research), but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility. (Thanks to the rootkit.org discord community for helping me out with some aspects of this!)
+ - This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat (at least according to my research), but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility. (Thanks to the https://rootkit.org discord community for helping me out with some aspects of this!)
  
  Installation Instructions:
  
