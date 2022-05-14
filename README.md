@@ -3,11 +3,13 @@
  
  (Windows Only)
  
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sxBfo7TW7Wo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+ 
  Requirements:
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
  
  What it is:
- - (https://www.youtube.com/watch?v=sxBfo7TW7Wo) This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat (at least according to my research), but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility. 
+ -  This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat (at least according to my research), but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility. 
  
  Installation Instructions:
  
