@@ -3,7 +3,11 @@
  
  (Windows Only)
 
-Uploading 2022-05-13 12-32-23_Trim_Trim_Trim.mp4…
+
+
+https://user-images.githubusercontent.com/98558514/168407844-8fde6a0c-3609-453d-9350-6bf5bdb00014.mp4
+
+
 
  Requirements:
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
