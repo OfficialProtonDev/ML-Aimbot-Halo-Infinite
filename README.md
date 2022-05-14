@@ -2,12 +2,18 @@
  A machine learning aimbot for Halo Infinite, this is for educational purposes only, if you use this in a game there is a possibility you might get banned!
  
  (Windows Only)
- 
+
+
+
+https://user-images.githubusercontent.com/98558514/168407844-8fde6a0c-3609-453d-9350-6bf5bdb00014.mp4
+
+
+
  Requirements:
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
  
  What it is:
- - This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat (at least according to my research), but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility.
+ -  This is a machine learning model that has been trained to detect enemies in halo infinite, it will then move your mouse to any enemies it detects, it functions rather well based on my testing. The AI itself is undetected by anti-cheat (at least according to my research), but the mouse movement libraries may be flagged by the anticheat, so far I have not been banned but there is always a possibility. 
  
  Installation Instructions:
  
@@ -18,6 +24,7 @@
  - Create a virtual environment using this command ``` conda create -n pytorch-gpu python==3.8```
  - Activate the virtual env using ``` conda activate pytorch-gpu ```
  - Install required packages (I'm making a requirements.txt but in the meantime just have a look through and see what packages are needed and pip install them)
+ - IMPORTANT! You must set enemy outlines in halo to the colour pineapple or the model will not detect them!
 
  How to use:
  
