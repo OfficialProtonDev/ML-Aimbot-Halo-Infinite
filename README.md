@@ -2,11 +2,9 @@
  A machine learning aimbot for Halo Infinite, this is for educational purposes only, if you use this in a game there is a possibility you might get banned!
  
  (Windows Only)
- 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=sxBfo7TW7Wo" target="_blank">
- <img src="http://img.youtube.com/vi/sxBfo7TW7Wo/maxresdefault.jpg" alt="Watch the video" width="1080" height="720" border="10" />
-</a>
- 
+
+Uploading 2022-05-13 12-32-23_Trim_Trim_Trim.mp4…
+
  Requirements:
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
  
