@@ -3,7 +3,7 @@
  
  (Windows Only)
  
-<iframe width="560" height="315" src="https://www.youtube.com/embed/sxBfo7TW7Wo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Watch the video](https://img.youtube.com/vi/sxBfo7TW7Wo/default.jpg)](https://youtu.be/sxBfo7TW7Wo)
  
  Requirements:
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
