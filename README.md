@@ -18,6 +18,7 @@
  - Create a virtual environment using this command ``` conda create -n pytorch-gpu ```
  - Activate the virtual env using ``` conda activate pytorch-gpu ```
  - Install required packages (I'm making a requirements.txt but in the meantime just have a look through and see what packages are needed and pip install them)
+ - IMPORTANT! You must set enemy outlines in halo to the colour pineapple or the model will not detect them!
 
  How to use:
  
