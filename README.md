@@ -3,7 +3,9 @@
  
  (Windows Only)
  
-[![Watch the video](https://img.youtube.com/vi/sxBfo7TW7Wo/default.jpg)](https://youtu.be/sxBfo7TW7Wo)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=sxBfo7TW7Wo" target="_blank">
+ <img src="http://img.youtube.com/vi/sxBfo7TW7Wo/mqdefault.jpg" alt="Watch the video" width="1080" height="720" border="10" />
+</a>
  
  Requirements:
  - A Nvidia GPU, the better the GPU, the better the aimbot performance.
