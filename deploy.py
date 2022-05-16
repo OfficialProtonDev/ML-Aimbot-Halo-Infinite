@@ -15,7 +15,6 @@ import gc
 from pathlib import Path
 
 aimbot = True
-triggerBot = False
 
 screenShotWidth = 416
 screenShotHeight = 416
@@ -59,14 +58,11 @@ def plot_boxes(results, frame, area, classes):
     #print(f"[INFO] Looping through all detections. . . ")
 
     highest_confidence_detection = None
-    highest_confidence = 0
 
     closest_mouse_dist = INFINITY
     
     cWidth = area["width"] / 2
     cHeight = area["height"] / 2
-
-    mouse = Controller()
 
     ### looping through to find closest target to mouse
     for i in range(n):
@@ -81,18 +77,13 @@ def plot_boxes(results, frame, area, classes):
             centerx = centerx - cWidth
             centery = centery - cHeight
 
-            current_mouse_pos = mouse.position
+            current_mouse_pos = win32api.GetCursorPos()
             
             dist = sqrt((current_mouse_pos[0]-centerx)**2 + (current_mouse_pos[1]-centery)**2)
             
             if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' or dist < closest_mouse_dist and classes[int(labels[i])] == 0:
                 highest_confidence_detection = row
                 closest_mouse_dist = dist
-
-            ### Check confidence and select if highest confidence
-            #if row[4] > highest_confidence and classes[int(labels[i])] == 'enemy' or row[4] > highest_confidence and classes[int(labels[i])] == 'person':
-                #highest_confidence_detection = row
-                #highest_confidence = highest_confidence_detection[4]
 
             # Draw bbox for this detection    
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2) ## BBox        
@@ -113,15 +104,9 @@ def plot_boxes(results, frame, area, classes):
         centerx = centerx - cWidth
         centery = (centery + headshot_offset) - cHeight
 
-        posx = pyautogui.position().x # Not working
-        posy = pyautogui.position().y # Not working
-
         if aimbot == True:
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
 
-        if x1 <= posx and posx <= x2 and y1 <= posy and posy <= y2 and triggerBot == True:
-            # Point is in bounding box
-            mouse.click(Button.left, 1)
 
     #print(f"[INFO] Finished extraction, returning frame!")
     return frame
@@ -203,7 +188,7 @@ def main(vid_out = None, run_loop=False):
             # Forced garbage cleanup every second
             count += 1
             if (time() - sTime) > 1:
-                print("CPS: {}".format(count))
+                print("FPS: {}".format(count))
                 count = 0
                 sTime = time()
 
