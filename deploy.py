@@ -144,7 +144,7 @@ def main(vid_out = None, run_loop=False):
             # by default VideoCapture returns float instead of int
             width = int(screenShotWidth)
             height = int(screenShotHeight)
-            fps = int(20)
+            fps = int(30)
             codec = cv2.VideoWriter_fourcc(*'mp4v') ##(*'XVID')
             out = cv2.VideoWriter(vid_out, codec, fps, (width, height))
 
@@ -203,7 +203,7 @@ def main(vid_out = None, run_loop=False):
 
 ### -------------------  calling the main function-------------------------------
 
-#main(run_loop=True, vid_out="ai_sight.mp4")
-main(run_loop=True)
+main(run_loop=True, vid_out="ai_sight.mp4")
+#main(run_loop=True)
             
 
