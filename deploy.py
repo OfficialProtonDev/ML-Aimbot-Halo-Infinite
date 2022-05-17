@@ -8,11 +8,9 @@ import win32api, win32con
 import pyautogui
 import numpy as np
 import keyboard
-from pynput.mouse import Button, Controller
 import mss
 from math import sqrt
 import gc
-from pathlib import Path
 
 aimbot = True
 
@@ -148,14 +146,13 @@ def main(vid_out = None, run_loop=False):
             codec = cv2.VideoWriter_fourcc(*'mp4v') ##(*'XVID')
             out = cv2.VideoWriter(vid_out, codec, fps, (width, height))
 
-        frame_no = 1
-
         #cv2.namedWindow("vid", cv2.WINDOW_NORMAL)
 
         count = 0
         sTime = time()
         
         while True:
+
             img = sct.grab(sctArea)
 
             img = np.array(img)
@@ -165,8 +162,10 @@ def main(vid_out = None, run_loop=False):
             #print(f"[INFO] Working with frame {frame_no} ")
 
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-            results = detectx(frame, model = model)          
-            frame = plot_boxes(results, frame, sctArea, classes = classes)
+
+            if win32api.GetKeyState(0x14): # if caps lock on (aimbot enabled) do the detection
+                results = detectx(frame, model = model)          
+                frame = plot_boxes(results, frame, sctArea, classes = classes)
                 
             #cv2.imshow("vid", frame)
 
@@ -183,12 +182,10 @@ def main(vid_out = None, run_loop=False):
                     out.release()
                 break
 
-            frame_no += 1
-
             # Forced garbage cleanup every second
             count += 1
             if (time() - sTime) > 1:
-                print("FPS: {}".format(count))
+                #print("FPS: {}".format(count))
                 count = 0
                 sTime = time()
 
@@ -203,7 +200,7 @@ def main(vid_out = None, run_loop=False):
 
 ### -------------------  calling the main function-------------------------------
 
-main(run_loop=True, vid_out="ai_sight.mp4")
-#main(run_loop=True)
+#main(run_loop=True, vid_out="ai_sight.mp4")
+main(run_loop=True)
             
 
