@@ -17,6 +17,8 @@ aimbot = True
 screenShotWidth = 416
 screenShotHeight = 416
 
+lock_distance = 10 # WIP
+
 headshot_mode = True
 
 videoGameWindowTitle = "Halo Infinite"
