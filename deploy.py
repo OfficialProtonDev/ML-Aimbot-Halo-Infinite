@@ -169,13 +169,6 @@ def main(vid_out = None, run_loop=False):
 
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-            if keyboard.is_pressed('o'):
-                c_lock_distance = None
-                c_headshot_mode = None 
-                c_no_headshot_multiplier = None 
-                c_headshot_multiplier = None 
-                c_movement_amp = None
-
             if win32api.GetKeyState(0x14): # if caps lock on (aimbot enabled) do the detection
                 results = detectx(frame, model = model)          
                 frame = plot_boxes(results, frame, sctArea, classes = classes)
