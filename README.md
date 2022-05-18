@@ -26,15 +26,9 @@ https://user-images.githubusercontent.com/98558514/168407844-8fde6a0c-3609-453d-
  - Install required packages (I'm making a requirements.txt but in the meantime just have a look through and see what packages are needed and pip install them)
  - IMPORTANT! You must set enemy outlines in halo to the colour pineapple or the model will not detect them!
 
- How to use:
- 
- - Open anaconda as administrator and cd to the directory of the deploy.py script in this repository.
- - Run the command ``` conda activate pytorch-gpu ``` to start up the virtual environment
- - Run the command ``` python deploy.py ``` to start the bot, make sure you have halo infinite open and are preferably about to enter a game.
- - If your aimbot seems to be lagging behind, try reducing your games framerate until the CPS your command line will print gets to 30+ (I am currently running my game at 40fps in order to allow the ai to get 30+ CPS)
-
- Settings:
- ```aimbot = True # Enables aimbot if True
+ Customizable Settings:
+ ```
+ aimbot = True # Enables aimbot if True
 
 screenShotWidth = 416 # Width of the detection box
 screenShotHeight = 416 # Height of the detection box
@@ -48,7 +42,15 @@ headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is 
 
 videoGameWindowTitle = "Halo Infinite" # The title of your game window
 
-movement_amp = 1 # Recommended between 0.5 and 1.5 (this is the snap speed)```
+movement_amp = 1 # Recommended between 0.5 and 1.5 (this is the snap speed)
+```
+
+ How to use:
+ 
+ - Open anaconda as administrator and cd to the directory of the deploy.py script in this repository.
+ - Run the command ``` conda activate pytorch-gpu ``` to start up the virtual environment
+ - Run the command ``` python deploy.py ``` to start the bot, make sure you have halo infinite open and are preferably about to enter a game.
+ - If your aimbot seems to be lagging behind, try reducing your games framerate until the CPS your command line will print gets to 30+ (I am currently running my game at 40fps in order to allow the ai to get 30+ CPS)
 
  Future improvements:
  - Add support for using Arduino Leonardo + USB Host Shield to spoof mouse inputs and evade possible anticheat detection on mouse movement.
