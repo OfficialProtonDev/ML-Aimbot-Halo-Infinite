@@ -12,18 +12,21 @@ import mss
 from math import sqrt
 import gc
 
-aimbot = True
+aimbot = True # Enables aimbot if True
 
-screenShotWidth = 416
-screenShotHeight = 416
+screenShotWidth = 416 # Width of the detection box
+screenShotHeight = 416 # Height of the detection box
 
-lock_distance = 10 # WIP
+lock_distance = 75 # Recommended over 60 (this is the minimum distance away the bot will lock from)
 
-headshot_mode = True
+headshot_mode = True # Pulls aim up towards head if True
 
-videoGameWindowTitle = "Halo Infinite"
+no_headshot_multiplier = 0.2 # Amount multiplier aim pulls up if headshot mode is false
+headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is true
 
-movement_amp = 1
+videoGameWindowTitle = "Halo Infinite" # The title of your game window
+
+movement_amp = 1 # Recommended between 0.5 and 1.5 (this is the snap speed)
 
 sct = mss.mss()
 
@@ -57,7 +60,7 @@ def plot_boxes(results, frame, area, classes):
     #print(f"[INFO] Total {n} detections. . . ")
     #print(f"[INFO] Looping through all detections. . . ")
 
-    highest_confidence_detection = None
+    best_detection = None
 
     closest_mouse_dist = INFINITY
     
@@ -76,27 +79,28 @@ def plot_boxes(results, frame, area, classes):
 
             centerx = centerx - cWidth
             centery = centery - cHeight
-
-            current_mouse_pos = win32api.GetCursorPos()
             
-            dist = sqrt((current_mouse_pos[0]-centerx)**2 + (current_mouse_pos[1]-centery)**2)
+            dist = sqrt((0-centerx)**2 + (0-centery)**2)
             
-            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' or dist < closest_mouse_dist and classes[int(labels[i])] == 0:
-                highest_confidence_detection = row
+            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' and dist < lock_distance or dist < closest_mouse_dist and classes[int(labels[i])] == 0 and dist < lock_distance:
+                best_detection = row
                 closest_mouse_dist = dist
 
             # Draw bbox for this detection    
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2) ## BBox        
 
-    if highest_confidence_detection is not None:
-        x1, y1, x2, y2 = int(highest_confidence_detection[0]*x_shape), int(highest_confidence_detection[1]*y_shape), int(highest_confidence_detection[2]*x_shape), int(highest_confidence_detection[3]*y_shape) ## BBOx coordniates
+    if closest_mouse_dist < INFINITY:
+        print("Distance to head: " + str(closest_mouse_dist))    
+
+    if best_detection is not None:
+        x1, y1, x2, y2 = int(best_detection[0]*x_shape), int(best_detection[1]*y_shape), int(best_detection[2]*x_shape), int(best_detection[3]*y_shape) ## BBOx coordniates
 
         box_height = y1 - y2
 
         if headshot_mode == True:
-            headshot_offset = box_height * 0.35
+            headshot_offset = box_height * headshot_multiplier
         else:
-            headshot_offset = box_height * 0.2    
+            headshot_offset = box_height * no_headshot_multiplier    
                 
         centerx = x1 - (0.5*(x1-x2))
         centery = y1 - (0.5*(y1-y2))
@@ -164,6 +168,13 @@ def main(vid_out = None, run_loop=False):
             #print(f"[INFO] Working with frame {frame_no} ")
 
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+
+            if keyboard.is_pressed('o'):
+                c_lock_distance = None
+                c_headshot_mode = None 
+                c_no_headshot_multiplier = None 
+                c_headshot_multiplier = None 
+                c_movement_amp = None
 
             if win32api.GetKeyState(0x14): # if caps lock on (aimbot enabled) do the detection
                 results = detectx(frame, model = model)          
