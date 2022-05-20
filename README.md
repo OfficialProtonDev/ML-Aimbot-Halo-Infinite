@@ -26,6 +26,25 @@ https://user-images.githubusercontent.com/98558514/168407844-8fde6a0c-3609-453d-
  - Install required packages (I'm making a requirements.txt but in the meantime just have a look through and see what packages are needed and pip install them)
  - IMPORTANT! You must set enemy outlines in halo to the colour pineapple or the model will not detect them!
 
+ Customizable Settings:
+ ```
+ aimbot = True # Enables aimbot if True
+
+screenShotWidth = 416 # Width of the detection box
+screenShotHeight = 416 # Height of the detection box
+
+lock_distance = 75 # Recommended over 60 (this is the minimum distance away the bot will lock from)
+
+headshot_mode = True # Pulls aim up towards head if True
+
+no_headshot_multiplier = 0.2 # Amount multiplier aim pulls up if headshot mode is false
+headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is true
+
+videoGameWindowTitle = "Halo Infinite" # The title of your game window
+
+movement_amp = 1 # Recommended between 0.5 and 1.5 (this is the snap speed)
+```
+
  How to use:
  
  - Open anaconda as administrator and cd to the directory of the deploy.py script in this repository.
