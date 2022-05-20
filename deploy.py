@@ -17,7 +17,7 @@ aimbot = True # Enables aimbot if True
 screenShotWidth = 416 # Width of the detection box
 screenShotHeight = 416 # Height of the detection box
 
-lock_distance = 75 # Recommended over 60 (this is the minimum distance away the bot will lock from)
+lock_distance = INFINITY # Recommended over 60 (this is the minimum distance away the bot will lock from)
 
 headshot_mode = True # Pulls aim up towards head if True
 
