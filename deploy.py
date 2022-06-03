@@ -14,8 +14,8 @@ import gc
 
 aimbot = True # Enables aimbot if True
 
-screenShotWidth = 1920 # Width of the detection box
-screenShotHeight = 1080 # Height of the detection box
+screenShotWidth = 416 # Width of the detection box
+screenShotHeight = 416 # Height of the detection box
 
 lock_distance = INFINITY # Recommended over 60 (this is the minimum distance away the bot will lock from)
 
@@ -151,7 +151,7 @@ def main(vid_out = None, run_loop=False):
             # by default VideoCapture returns float instead of int
             width = int(screenShotWidth)
             height = int(screenShotHeight)
-            fps = int(25)
+            fps = int(35)
             codec = cv2.VideoWriter_fourcc(*'mp4v') ##(*'XVID')
             out = cv2.VideoWriter(vid_out, codec, fps, (width, height))
 
