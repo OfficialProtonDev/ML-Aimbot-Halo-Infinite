@@ -121,7 +121,10 @@ def main(vid_out = None, run_loop=False):
 
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
-    model = torch.hub.load('./yolov5', 'custom', source ='local', path='last.pt', force_reload=True) # The repo is stored locally
+    if (videoGameWindowTitle == "Halo Infinite"):
+        model = torch.hub.load('./yolov5', 'custom', source ='local', path='halo.pt', force_reload=True) # Halo model
+    elif (videoGameWindowTitle == "Counter"):
+        model = torch.hub.load('./yolov5', 'custom', source ='local', path='csgo.pt', force_reload=True) # CSGO Model
 
     classes = model.names ### class names in string format
 
@@ -206,7 +209,7 @@ def main(vid_out = None, run_loop=False):
 
 ### -------------------  calling the main function-------------------------------
 
-#main(run_loop=True, vid_out="ai_sight.mp4")
-main(run_loop=True)
+main(run_loop=True, vid_out="ai_sight.mp4")
+#main(run_loop=True)
             
 
