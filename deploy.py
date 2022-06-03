@@ -14,8 +14,8 @@ import gc
 
 aimbot = True # Enables aimbot if True
 
-screenShotWidth = 416 # Width of the detection box
-screenShotHeight = 416 # Height of the detection box
+screenShotWidth = 1920 # Width of the detection box
+screenShotHeight = 1080 # Height of the detection box
 
 lock_distance = INFINITY # Recommended over 60 (this is the minimum distance away the bot will lock from)
 
@@ -23,6 +23,8 @@ headshot_mode = True # Pulls aim up towards head if True
 
 no_headshot_multiplier = 0.2 # Amount multiplier aim pulls up if headshot mode is false
 headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is true
+
+detection_threshold = 0.55 # Cutoff enemy certainty percentage for aiming
 
 videoGameWindowTitle = "Halo Infinite" # The title of your game window
 
@@ -70,7 +72,7 @@ def plot_boxes(results, frame, area, classes):
     ### looping through to find closest target to mouse
     for i in range(n):
         row = cord[i]
-        if row[4] >= 0.65: ### threshold value for detection. We are discarding everything below this value
+        if row[4] >= detection_threshold: ### threshold value for detection. We are discarding everything below this value
             x1, y1, x2, y2 = int(row[0]*x_shape), int(row[1]*y_shape), int(row[2]*x_shape), int(row[3]*y_shape) ## BBOx coordniates
 
             ### Check dist to mouse and if closest select this
@@ -123,8 +125,6 @@ def main(vid_out = None, run_loop=False):
     ## loading the custom trained model
     if (videoGameWindowTitle == "Halo Infinite"):
         model = torch.hub.load('./yolov5', 'custom', source ='local', path='halo.pt', force_reload=True) # Halo model
-    elif (videoGameWindowTitle == "Counter"):
-        model = torch.hub.load('./yolov5', 'custom', source ='local', path='csgo.pt', force_reload=True) # CSGO Model
 
     classes = model.names ### class names in string format
 
@@ -151,7 +151,7 @@ def main(vid_out = None, run_loop=False):
             # by default VideoCapture returns float instead of int
             width = int(screenShotWidth)
             height = int(screenShotHeight)
-            fps = int(30)
+            fps = int(25)
             codec = cv2.VideoWriter_fourcc(*'mp4v') ##(*'XVID')
             out = cv2.VideoWriter(vid_out, codec, fps, (width, height))
 
@@ -194,7 +194,7 @@ def main(vid_out = None, run_loop=False):
             # Forced garbage cleanup every second
             count += 1
             if (time() - sTime) > 1:
-                #print("FPS: {}".format(count))
+                print("FPS: {}".format(count))
                 count = 0
                 sTime = time()
 
@@ -209,7 +209,7 @@ def main(vid_out = None, run_loop=False):
 
 ### -------------------  calling the main function-------------------------------
 
-main(run_loop=True, vid_out="ai_sight.mp4")
+main(run_loop=True, vid_out="Halo_Demo.mp4")
 #main(run_loop=True)
             
 
