@@ -21,9 +21,9 @@ https://user-images.githubusercontent.com/98558514/168407844-8fde6a0c-3609-453d-
  - Install anaconda (https://www.anaconda.com/products/distribution) on your computer.
  - Open anaconda as administrator and cd to the directory of the deploy.py script in this repository.
  - Install pytorch and cuda (https://pytorch.org/get-started)
- - Create a virtual environment using this command ``` conda create -n pytorch-gpu python==3.8```
+ - Create a virtual environment using this command ``` conda create -n pytorch-gpu python==3.8 ```
  - Activate the virtual env using ``` conda activate pytorch-gpu ```
- - Install required packages (I'm making a requirements.txt but in the meantime just have a look through and see what packages are needed and pip install them)
+ - Install required packages by running ``` pip install -r requirements.txt ```
  - IMPORTANT! You must set enemy outlines in halo to the colour pineapple or the model will not detect them!
 
  Customizable Settings:
