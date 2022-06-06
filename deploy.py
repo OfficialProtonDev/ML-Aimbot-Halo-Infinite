@@ -89,10 +89,7 @@ def plot_boxes(results, frame, area, classes):
                 closest_mouse_dist = dist
 
             # Draw bbox for this detection    
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2) ## BBox        
-
-    if closest_mouse_dist < INFINITY:
-        print("Distance to head: " + str(closest_mouse_dist))    
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2) ## BBox         
 
     if best_detection is not None:
         x1, y1, x2, y2 = int(best_detection[0]*x_shape), int(best_detection[1]*y_shape), int(best_detection[2]*x_shape), int(best_detection[3]*y_shape) ## BBOx coordniates
@@ -118,7 +115,6 @@ def plot_boxes(results, frame, area, classes):
     return frame
 
 ### ---------------------------------------------- Main function -----------------------------------------------------
-
 def main(vid_out = None, run_loop=False):
 
     print(f"[INFO] Loading model... ")
