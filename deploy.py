@@ -10,12 +10,12 @@ import numpy as np
 import keyboard
 import mss
 from math import sqrt
-import gc
+import PySimpleGUI as sg
 
 aimbot = True # Enables aimbot if True
 
-screenShotWidth = 416 # Width of the detection box
-screenShotHeight = 416 # Height of the detection box
+screenShotWidth = 832 # Width of the detection box
+screenShotHeight = 832 # Height of the detection box
 
 lock_distance = INFINITY # Recommended over 60 (this is the minimum distance away the bot will lock from)
 
@@ -26,11 +26,24 @@ headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is 
 
 detection_threshold = 0.55 # Cutoff enemy certainty percentage for aiming
 
-videoGameWindowTitle = "Halo Infinite" # The title of your game window
+videoGameWindowTitle = "Discord" # The title of your game window
+
+modelFile = "apex.pt"
 
 movement_amp = 1 # Recommended between 0.5 and 1.5 (this is the snap speed)
 
 sct = mss.mss()
+
+winLayout = [
+    [sg.Text("Aimbot?")], 
+    [sg.Button("Enable"), sg.Button("Disable")],
+    [sg.Text("Headshot mode?")],
+    [sg.Button("On"), sg.Button("Off")],
+    [sg.Text("Snap speed"), sg.InputText()],
+    [sg.Text("Lock Distance"), sg.InputText()],
+    [sg.Text("Detection Threshold"), sg.InputText()],
+    [sg.Submit()]
+    ]
 
 ### -------------------------------------- function to run detection ---------------------------------------------------------
 def detectx (frame, model):
@@ -84,7 +97,7 @@ def plot_boxes(results, frame, area, classes):
             
             dist = sqrt((0-centerx)**2 + (0-centery)**2)
             
-            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' and dist < lock_distance or dist < closest_mouse_dist and classes[int(labels[i])] == 0 and dist < lock_distance:
+            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' or '0' and dist < lock_distance or dist < closest_mouse_dist and classes[int(labels[i])] == 0 and dist < lock_distance:
                 best_detection = row
                 closest_mouse_dist = dist
 
@@ -107,7 +120,7 @@ def plot_boxes(results, frame, area, classes):
         centerx = centerx - cWidth
         centery = (centery + headshot_offset) - cHeight
 
-        if aimbot == True:
+        if aimbot == True and win32api.GetKeyState(0x14):
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
 
 
@@ -119,8 +132,7 @@ def main(vid_out = None, run_loop=False):
 
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
-    if (videoGameWindowTitle == "Halo Infinite"):
-        model = torch.hub.load('./yolov5', 'custom', source ='local', path='halo.pt', force_reload=True) # Halo model
+    model = torch.hub.load('./yolov5', 'custom', source ='local', path=modelFile, force_reload=True) # Halo model
 
     classes = model.names ### class names in string format
 
@@ -147,11 +159,11 @@ def main(vid_out = None, run_loop=False):
             # by default VideoCapture returns float instead of int
             width = int(screenShotWidth)
             height = int(screenShotHeight)
-            fps = int(35)
+            fps = int(25)
             codec = cv2.VideoWriter_fourcc(*'mp4v') ##(*'XVID')
             out = cv2.VideoWriter(vid_out, codec, fps, (width, height))
 
-        #cv2.namedWindow("vid", cv2.WINDOW_NORMAL)
+        cv2.namedWindow("vid", cv2.WINDOW_NORMAL)
 
         count = 0
         sTime = time()
@@ -165,14 +177,13 @@ def main(vid_out = None, run_loop=False):
             frame = img
 
             #print(f"[INFO] Working with frame {frame_no} ")
+            if (videoGameWindowTitle == "Halo Infinite"):
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
-            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
-            if win32api.GetKeyState(0x14): # if caps lock on (aimbot enabled) do the detection
-                results = detectx(frame, model = model)          
-                frame = plot_boxes(results, frame, sctArea, classes = classes)
+            results = detectx(frame, model = model)          
+            frame = plot_boxes(results, frame, sctArea, classes = classes)                
                 
-            #cv2.imshow("vid", frame)
+            cv2.imshow("vid", frame)
 
             if vid_out:
                 #print(f"[INFO] Saving output video. . . ")
@@ -199,13 +210,14 @@ def main(vid_out = None, run_loop=False):
         print(f"[INFO] Cleaning up. . . ")
         
         ## closing all windows
+        window.close()
         exit()  
 
 
 
 ### -------------------  calling the main function-------------------------------
 
-main(run_loop=True, vid_out="Halo_Demo.mp4")
+main(run_loop=True, vid_out="outvid.mp4")
 #main(run_loop=True)
-            
+
 
