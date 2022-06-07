@@ -210,7 +210,6 @@ def main(vid_out = None, run_loop=False):
         print(f"[INFO] Cleaning up. . . ")
         
         ## closing all windows
-        window.close()
         exit()  
 
 
