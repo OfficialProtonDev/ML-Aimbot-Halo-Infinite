@@ -14,8 +14,8 @@ import PySimpleGUI as sg
 
 aimbot = True # Enables aimbot if True
 
-screenShotWidth = 640 # Width of the detection box
-screenShotHeight = 360 # Height of the detection box
+screenShotWidth = 400 # Width of the detection box
+screenShotHeight = 200 # Height of the detection box
 
 lock_distance = INFINITY # Recommended over 60 (this is the minimum distance away the bot will lock from)
 
@@ -24,9 +24,9 @@ headshot_mode = True # Pulls aim up towards head if True
 no_headshot_multiplier = 0.2 # Amount multiplier aim pulls up if headshot mode is false
 headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is true
 
-detection_threshold = 0.5 # Cutoff enemy certainty percentage for aiming
+detection_threshold = 0.65 # Cutoff enemy certainty percentage for aiming
 
-videoGameWindowTitle = "Apex Legends" # The title of your game window
+videoGameWindowTitle = "Counter" # The title of your game window
 
 modelFile = "generic-1-(W).pt" # This is the AI model the program will use, multiple are included, (W) = working, (NW) = not working.
 
@@ -50,6 +50,7 @@ def detectx (frame, model):
     frame = [frame]
     #print(f"[INFO] Detecting. . . ")
     results = model(frame)
+    
     # results.show()
     # print( results.xyxyn[0])
     # print(results.xyxyn[0][:, -1])
@@ -97,7 +98,7 @@ def plot_boxes(results, frame, area, classes):
             
             dist = sqrt((0-centerx)**2 + (0-centery)**2)
             
-            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' or '0' and dist < lock_distance or dist < closest_mouse_dist and classes[int(labels[i])] == 0 and dist < lock_distance:
+            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' or 'person' or '0' and dist < lock_distance or dist < closest_mouse_dist and classes[int(labels[i])] == 0 and dist < lock_distance:
                 best_detection = row
                 closest_mouse_dist = dist
 
@@ -120,8 +121,8 @@ def plot_boxes(results, frame, area, classes):
         centerx = centerx - cWidth
         centery = (centery + headshot_offset) - cHeight
 
-        #if aimbot == True and win32api.GetKeyState(0x14):
-            #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
+        if aimbot == True and win32api.GetKeyState(0x14):
+            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
 
 
     #print(f"[INFO] Finished extraction, returning frame!")
@@ -132,7 +133,7 @@ def main(vid_out = None, run_loop=False):
 
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
-    model = torch.hub.load('./yolov5', 'custom', source ='local', path=modelFile, force_reload=True) # Halo model
+    model = torch.hub.load('./yolov5', 'custom', source ='local', path=modelFile, force_reload=True)
 
     classes = model.names ### class names in string format
 
