@@ -14,8 +14,8 @@ import PySimpleGUI as sg
 
 aimbot = True # Enables aimbot if True
 
-screenShotWidth = 832 # Width of the detection box
-screenShotHeight = 832 # Height of the detection box
+screenShotWidth = 640 # Width of the detection box
+screenShotHeight = 360 # Height of the detection box
 
 lock_distance = INFINITY # Recommended over 60 (this is the minimum distance away the bot will lock from)
 
@@ -24,11 +24,11 @@ headshot_mode = True # Pulls aim up towards head if True
 no_headshot_multiplier = 0.2 # Amount multiplier aim pulls up if headshot mode is false
 headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is true
 
-detection_threshold = 0.55 # Cutoff enemy certainty percentage for aiming
+detection_threshold = 0.5 # Cutoff enemy certainty percentage for aiming
 
-videoGameWindowTitle = "Discord" # The title of your game window
+videoGameWindowTitle = "Apex Legends" # The title of your game window
 
-modelFile = "apex.pt"
+modelFile = "generic-1-(W).pt" # This is the AI model the program will use, multiple are included, (W) = working, (NW) = not working.
 
 movement_amp = 1 # Recommended between 0.5 and 1.5 (this is the snap speed)
 
@@ -120,8 +120,8 @@ def plot_boxes(results, frame, area, classes):
         centerx = centerx - cWidth
         centery = (centery + headshot_offset) - cHeight
 
-        if aimbot == True and win32api.GetKeyState(0x14):
-            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
+        #if aimbot == True and win32api.GetKeyState(0x14):
+            #win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
 
 
     #print(f"[INFO] Finished extraction, returning frame!")
@@ -189,7 +189,7 @@ def main(vid_out = None, run_loop=False):
                 #print(f"[INFO] Saving output video. . . ")
                 out.write(frame)
 
-            if cv2.waitKey(1) and 0xFF == 27:
+            if cv2.waitKey(1) and 0xFF == ord('q'):
                 break
 
             if keyboard.is_pressed('esc'):
@@ -216,7 +216,7 @@ def main(vid_out = None, run_loop=False):
 
 ### -------------------  calling the main function-------------------------------
 
-main(run_loop=True, vid_out="outvid.mp4")
+main(run_loop=True, vid_out="example.mp4")
 #main(run_loop=True)
 
 

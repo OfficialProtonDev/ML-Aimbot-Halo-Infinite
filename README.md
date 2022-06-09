@@ -42,6 +42,8 @@ headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is 
 
 videoGameWindowTitle = "Halo Infinite" # The title of your game window
 
+modelFile = "halo-1-(W).pt" # This is the AI model the program will use, multiple are included, (W) = working, (NW) = not working.
+
 movement_amp = 1 # Recommended between 0.5 and 1.5 (this is the snap speed)
 ```
 
