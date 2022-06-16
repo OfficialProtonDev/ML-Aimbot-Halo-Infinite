@@ -1,6 +1,7 @@
 ### importing required libraries
 import gc
 from json.encoder import INFINITY
+from socket import timeout
 import torch
 import cv2
 from time import time
@@ -11,6 +12,7 @@ import keyboard
 import mss
 from math import sqrt
 import PySimpleGUI as sg
+import serial, serial.tools.list_ports
 
 aimbot = True # Enables aimbot if True
 
@@ -63,7 +65,7 @@ def detectx (frame, model):
     return labels, cordinates
 
 ### ------------------------------------ to plot the BBox and results --------------------------------------------------------
-def plot_boxes(results, frame, area, classes):
+def plot_boxes(results, frame, area, classes, arduino):
 
     """
     --> This function takes results, frame and classes
@@ -123,15 +125,17 @@ def plot_boxes(results, frame, area, classes):
         centerx = centerx - cWidth
         centery = (centery + headshot_offset) - cHeight
 
-        if aimbot == True and win32api.GetAsyncKeyState(lockKey):
+        if aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduino == None:
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
+        elif aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduino != None:
+            arduino.write(((centerx * movement_amp) + ':' + (centery * movement_amp) + 'x').encode())
 
 
     #print(f"[INFO] Finished extraction, returning frame!")
     return frame
 
 ### ---------------------------------------------- Main function -----------------------------------------------------
-def main(vid_out = None, run_loop=False):
+def main(vid_out = None, run_loop=False, arduino=None):
 
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
@@ -184,7 +188,7 @@ def main(vid_out = None, run_loop=False):
                 frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
             results = detectx(frame, model = model)          
-            frame = plot_boxes(results, frame, sctArea, classes = classes)                
+            frame = plot_boxes(results, frame, sctArea, classes = classes, arduino)                
                 
             cv2.imshow("vid", frame)
 
@@ -219,7 +223,13 @@ def main(vid_out = None, run_loop=False):
 
 ### -------------------  calling the main function-------------------------------
 
-main(run_loop=True, vid_out="example.mp4")
+ports = list(serial.tools.list_tools.comports())
+
+print(ports)
+
+arduino = serial.Serial('COM5', 9600, timeout=1)
+
+main(run_loop=True, vid_out="example.mp4", arduino)
 #main(run_loop=True)
 
 
