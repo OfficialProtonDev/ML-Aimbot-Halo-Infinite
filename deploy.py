@@ -12,9 +12,11 @@ import keyboard
 import mss
 from math import sqrt
 import PySimpleGUI as sg
-import serial, serial.tools.list_ports
+import serial
 
 aimbot = True # Enables aimbot if True
+
+arduinoMode = False # Using an arduino mouse spoof?
 
 screenShotWidth = 400 # Width of the detection box
 screenShotHeight = 200 # Height of the detection box
@@ -65,7 +67,7 @@ def detectx (frame, model):
     return labels, cordinates
 
 ### ------------------------------------ to plot the BBox and results --------------------------------------------------------
-def plot_boxes(results, frame, area, classes, arduino):
+def plot_boxes(results, frame, area, arduino, classes):
 
     """
     --> This function takes results, frame and classes
@@ -135,7 +137,10 @@ def plot_boxes(results, frame, area, classes, arduino):
     return frame
 
 ### ---------------------------------------------- Main function -----------------------------------------------------
-def main(vid_out = None, run_loop=False, arduino=None):
+def main(vid_out = None, arduino=False, run_loop=False):
+
+    if arduino == True:
+        arduino = serial.Serial('COM5', 9600, timeout=1)
 
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
@@ -151,7 +156,7 @@ def main(vid_out = None, run_loop=False, arduino=None):
             videoGameWindow = videoGameWindows[0]
         except:
             print("The game window you are trying to select doesn't exist.")
-            print("Check variable videoGameWindowTitle (typically on line 19")
+            print("Check variable videoGameWindowTitle (typically on line 33")
             exit()
 
         # Select that Window
@@ -188,7 +193,7 @@ def main(vid_out = None, run_loop=False, arduino=None):
                 frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
             results = detectx(frame, model = model)          
-            frame = plot_boxes(results, frame, sctArea, classes = classes, arduino)                
+            frame = plot_boxes(results, frame, sctArea, arduino, classes = classes)                
                 
             cv2.imshow("vid", frame)
 
@@ -223,13 +228,7 @@ def main(vid_out = None, run_loop=False, arduino=None):
 
 ### -------------------  calling the main function-------------------------------
 
-ports = list(serial.tools.list_tools.comports())
-
-print(ports)
-
-arduino = serial.Serial('COM5', 9600, timeout=1)
-
-main(run_loop=True, vid_out="example.mp4", arduino)
+main(run_loop=True, arduino=arduinoMode, vid_out="example.mp4")
 #main(run_loop=True)
 
 
