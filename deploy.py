@@ -127,9 +127,9 @@ def plot_boxes(results, frame, area, arduino, classes):
         centerx = centerx - cWidth
         centery = (centery + headshot_offset) - cHeight
 
-        if aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduino == None:
+        if aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduinoMode == False:
             win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
-        elif aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduino != None:
+        elif aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduinoMode == True:
             arduino.write(((centerx * movement_amp) + ':' + (centery * movement_amp) + 'x').encode())
 
 
