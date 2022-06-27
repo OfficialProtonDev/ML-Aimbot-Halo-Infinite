@@ -3,8 +3,9 @@ import gc
 from json.encoder import INFINITY
 from socket import timeout
 import torch
+import os
 import cv2
-from time import time
+from time import time, sleep
 import win32api, win32con
 import pyautogui
 import numpy as np
@@ -13,43 +14,43 @@ import mss
 from math import sqrt
 import PySimpleGUI as sg
 import serial
+from ctypes import *
+import math
 
 aimbot = True # Enables aimbot if True
 
 arduinoMode = False # Using an arduino mouse spoof?
 
-screenShotWidth = 400 # Width of the detection box
-screenShotHeight = 200 # Height of the detection box
+screenShotWidth = 320 # Width of the detection box
+screenShotHeight = 320 # Height of the detection box
 
-lock_distance = INFINITY # Recommended over 60 (this is the minimum distance away the bot will lock from)
-
-headshot_mode = False # Pulls aim up towards head if True
+headshot_mode = True # Pulls aim up towards head if True
 
 no_headshot_multiplier = 0.2 # Amount multiplier aim pulls up if headshot mode is false
 headshot_multiplier = 0.35 # Amount multiplier aim pulls up if headshot mode is true
 
 detection_threshold = 0.65 # Cutoff enemy certainty percentage for aiming
 
-videoGameWindowTitle = "Counter" # The title of your game window
-
-modelFile = "generic-1-(W).pt" # This is the AI model the program will use, multiple are included, (W) = working, (NW) = not working.
-
-movement_amp = 1.5 # Recommended between 0.5 and 1.5 (this is the snap speed)
-
-lockKey = 0x06
+lockKey = 0x14
 
 sct = mss.mss()
 
-winLayout = [
-    [sg.Text("Aimbot?")], 
-    [sg.Button("Enable"), sg.Button("Disable")],
-    [sg.Text("Headshot mode?")],
-    [sg.Button("On"), sg.Button("Off")],
-    [sg.Text("Snap speed"), sg.InputText()],
-    [sg.Text("Lock Distance"), sg.InputText()],
-    [sg.Text("Detection Threshold"), sg.InputText()],
-    [sg.Submit()]
-    ]
+layout = [
+    [
+        sg.Text("Model Folder"),
+        sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
+        sg.FolderBrowse(),
+    ],
+    [
+        [sg.Listbox(
+            values=[], enable_events=True, size=(40, 20), key="-FILE LIST-"
+        )],
+        [sg.Text('Game Window', size=(15, 1)), sg.InputText("Counter", key="gw1")],
+        [sg.Text('Lock Distance', size=(15, 1)), sg.InputText("100", key="ld1")],
+        [sg.Text('Lock Speed', size=(15, 1)), sg.InputText("2", key="ls1")],
+        [sg.Button('Start'), sg.Button('Exit')]
+    ],
+]
 
 ### -------------------------------------- function to run detection ---------------------------------------------------------
 def detectx (frame, model):
@@ -66,8 +67,16 @@ def detectx (frame, model):
 
     return labels, cordinates
 
+def FindPoint(x1, y1, x2,
+              y2, x, y) :
+    if (x > x1 and x < x2 and
+        y > y1 and y < y2) :
+        return True
+    else :
+        return False
+
 ### ------------------------------------ to plot the BBox and results --------------------------------------------------------
-def plot_boxes(results, frame, area, arduino, classes):
+def plot_boxes(results, frame, area, arduino, lockDistance, lockSpeed, classes):
 
     """
     --> This function takes results, frame and classes
@@ -104,12 +113,13 @@ def plot_boxes(results, frame, area, arduino, classes):
             
             dist = sqrt((0-centerx)**2 + (0-centery)**2)
             
-            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' or 'person' or '0' and dist < lock_distance:
+            if dist < closest_mouse_dist and classes[int(labels[i])] == 'enemy' or 'person' or '0' or 'body' and dist < lockDistance:
                 best_detection = row
                 closest_mouse_dist = dist
 
             # Draw bbox for this detection    
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2) ## BBox         
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2) ## BBox   
+            
 
     if best_detection is not None:
         x1, y1, x2, y2 = int(best_detection[0]*x_shape), int(best_detection[1]*y_shape), int(best_detection[2]*x_shape), int(best_detection[3]*y_shape) ## BBOx coordniates
@@ -127,24 +137,25 @@ def plot_boxes(results, frame, area, arduino, classes):
         centerx = centerx - cWidth
         centery = (centery + headshot_offset) - cHeight
 
-        if aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduinoMode == False:
-            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * movement_amp), int(centery * movement_amp), 0, 0)
-        elif aimbot == True and win32api.GetAsyncKeyState(lockKey) and arduinoMode == True:
-            arduino.write(((centerx * movement_amp) + ':' + (centery * movement_amp) + 'x').encode())
-
+        if aimbot == True and win32api.GetKeyState(lockKey) and arduinoMode == False:
+            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, int(centerx * lockSpeed), int(centery * lockSpeed), 0, 0)
+        elif aimbot == True and win32api.GetKeyState(lockKey) and arduinoMode == True:
+            centerx = centerx - 960
+            centery = centery - 540
+            arduino.write(((centerx * lockSpeed) + ':' + (centery * lockSpeed) + 'x').encode())
 
     #print(f"[INFO] Finished extraction, returning frame!")
     return frame
 
 ### ---------------------------------------------- Main function -----------------------------------------------------
-def main(vid_out = None, arduino=False, run_loop=False):
+def main(arduino=False, run_loop=False, modelPath=None, gameWindow=None, lockSpeed=None, lockDist=None):
 
     if arduino == True:
         arduino = serial.Serial('COM5', 9600, timeout=1)
 
     print(f"[INFO] Loading model... ")
     ## loading the custom trained model
-    model = torch.hub.load('./yolov5', 'custom', source ='local', path=modelFile, force_reload=True)
+    model = torch.hub.load('./yolov5', 'custom', source='local', path=modelPath, force_reload=True)
 
     classes = model.names ### class names in string format
 
@@ -152,11 +163,11 @@ def main(vid_out = None, arduino=False, run_loop=False):
 
         # Selecting the correct game window
         try:
-            videoGameWindows = pyautogui.getWindowsWithTitle(videoGameWindowTitle)
+            videoGameWindows = pyautogui.getWindowsWithTitle(gameWindow)
             videoGameWindow = videoGameWindows[0]
         except:
             print("The game window you are trying to select doesn't exist.")
-            print("Check variable videoGameWindowTitle (typically on line 33")
+            print("Check variable videoGameWindowTitle (typically on line 36)")
             exit()
 
         # Select that Window
@@ -167,19 +178,13 @@ def main(vid_out = None, arduino=False, run_loop=False):
                          "width": screenShotWidth,
                          "height": screenShotHeight}
 
-        if vid_out: ### creating the video writer if video output path is given
-            # by default VideoCapture returns float instead of int
-            width = int(screenShotWidth)
-            height = int(screenShotHeight)
-            fps = int(25)
-            codec = cv2.VideoWriter_fourcc(*'mp4v') ##(*'XVID')
-            out = cv2.VideoWriter(vid_out, codec, fps, (width, height))
-
-        cv2.namedWindow("vid", cv2.WINDOW_NORMAL)
+        #cv2.namedWindow("vid", cv2.WINDOW_NORMAL)
 
         count = 0
         sTime = time()
         
+        print("Program Working!")
+
         while True:
 
             img = sct.grab(sctArea)
@@ -189,31 +194,25 @@ def main(vid_out = None, arduino=False, run_loop=False):
             frame = img
 
             #print(f"[INFO] Working with frame {frame_no} ")
-            if (videoGameWindowTitle == "Halo Infinite"):
+            if (gameWindow == "Halo Infinite"):
                 frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
             results = detectx(frame, model = model)          
-            frame = plot_boxes(results, frame, sctArea, arduino, classes = classes)                
+            frame = plot_boxes(results, frame, sctArea, arduino, lockDistance=lockDist, lockSpeed=lockSpeed, classes=classes)                
                 
-            cv2.imshow("vid", frame)
-
-            if vid_out:
-                #print(f"[INFO] Saving output video. . . ")
-                out.write(frame)
+            #cv2.imshow("vid", frame)
 
             if cv2.waitKey(1) and 0xFF == ord('q'):
                 break
 
             if keyboard.is_pressed('esc'):
                 print(f"[INFO] Exiting. . . ")               
-                if vid_out:
-                    out.release()
                 break
 
             # Forced garbage cleanup every second
             count += 1
             if (time() - sTime) > 1:
-                print("FPS: {}".format(count))
+                #print("CPS: {}".format(count))
                 count = 0
                 sTime = time()
 
@@ -224,11 +223,74 @@ def main(vid_out = None, arduino=False, run_loop=False):
         ## closing all windows
         exit()  
 
+def selectSettings():
+    window = sg.Window("Proton Client", layout)
 
+    chosenModel = "replaceme.pt"
+
+    while True:
+        event, values = window.read()
+
+        # Folder name was filled in, make a list of files in the folder
+        if event == "-FOLDER-":
+            folder = values["-FOLDER-"]
+            try:
+                # Get list of files in folder
+                file_list = os.listdir(folder)
+            except:
+                file_list = []
+
+            fnames = [
+                f
+                for f in file_list
+                if os.path.isfile(os.path.join(folder, f))
+                and f.lower().endswith((".pt"))
+            ]
+            window["-FILE LIST-"].update(fnames)
+
+        elif event == "-FILE LIST-":  # A file was chosen from the listbox
+            try:
+                filename = os.path.join(
+                    values["-FOLDER-"], values["-FILE LIST-"][0]
+                )
+                chosenModel = filename
+            except:
+                pass
+        
+        elif event == 'Start':
+            if values['ld1'] != "":
+                ld = float(values['ld1'])
+            else:
+                ld = 100
+
+            if values['gw1'] != "":
+                gw = values['gw1']
+            else:
+                gw = "Counter"
+
+            if values['ls1'] != "":
+                ls = float(values['ls1'])
+            else:
+                ls = 2
+            break
+
+        elif event == "Exit" or event == sg.WIN_CLOSED:
+            window.close()
+            exit()
+
+    window.close()
+
+    print("Model Path: ", str(chosenModel))
+    print("Lock Distance: ", str(ld))
+    print("Lock Speed: ", str(ls))
+    print("Game Window: ", str(gw))
+
+    return chosenModel, gw, ld, ls
 
 ### -------------------  calling the main function-------------------------------
 
-main(run_loop=True, arduino=arduinoMode, vid_out="example.mp4")
-#main(run_loop=True)
+chosenModel, gw, ld, ls = selectSettings()
+
+main(run_loop=True, modelPath=chosenModel, gameWindow=gw, lockDist=ld, lockSpeed=ls)
 
 
